@@ -8,7 +8,7 @@ router.post("/add-room", async (req, res) => {
         const { id, name } = req.body;
         const room = new Room({ id, name, tables: [] });
         await room.save();
-        res.status(201).json(room);
+        res.status(200).json(room);
     } catch (error) {
         res.status(500).json({ message: "Error adding room", error });
     }
@@ -18,13 +18,17 @@ router.post("/add-room", async (req, res) => {
 router.post("/add-table", async (req, res) => {
     try {
         const { roomId, table } = req.body;
-        const room = await Room.findOne({ id: roomId });
-        if (!room) return res.status(404).json({ message: "Room not found" });
-        room.tables.push(table);
-        await room.save();
-        res.status(200).json(room);
+        console.log("body ============>>>", req.body)
+
+        const parsedTable = typeof table === 'string' ? JSON.parse(table) : table;
+
+        // Validate the parsed object
+        if (!roomId || !parsedTable.id || !parsedTable.name) {
+            throw new Error('Invalid data');
+        }
+        res.status(200).json({ message: 'Table added successfully', data: parsedTable });
     } catch (error) {
-        res.status(500).json({ message: "Error adding table", error });
+        res.status(400).json({ message: 'Error adding table', error: error.message });
     }
 });
 

@@ -21,7 +21,7 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // Import routes
 
-app.use("/api/tables", tableRoutes);
+app.use("/api/hotel", tableRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;
